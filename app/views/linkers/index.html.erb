@@ -48,25 +48,26 @@ function readCSVFile() {
 
     var lines = reader.result.split('\n');
 
-    for(var i = 0; i < lines.length; i+=1) {
+    lines.forEach(function(line) {
 
       var new_row = document.createElement('tr');
-      var new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(lines[i]));
+      var new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(line));
       new_row.appendChild(new_cell);
 
       var xhttp = new XMLHttpRequest();
-      xhttp.open("GET", "http://linkfixer.herokuapp.com/ping_url?url_string=" + encodeURIComponent(lines[i]) + "&search_term=" + encodeURIComponent(document.getElementById('search_term').value), false);
+      xhttp.open("GET", "ping_url?url_string=" + encodeURIComponent(line) + "&search_term=" + encodeURIComponent(document.getElementById('search_term').value));
+      xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+          console.log(xhttp.responseText);
+          new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(JSON.parse(xhttp.responseText)[0])); new_row.appendChild(new_cell);
+          new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(JSON.parse(xhttp.responseText)[1])); new_row.appendChild(new_cell);
+          new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(JSON.parse(xhttp.responseText)[2])); new_row.appendChild(new_cell);
+          new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(JSON.parse(xhttp.responseText)[3])); new_row.appendChild(new_cell);
+          tbdy.appendChild(new_row);
+        }
+      };
       xhttp.send();
-      if (xhttp.readyState == 4 && xhttp.status == 200) {
-        console.log(xhttp.responseText);
-        new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(JSON.parse(xhttp.responseText)[0])); new_row.appendChild(new_cell);
-        new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(JSON.parse(xhttp.responseText)[1])); new_row.appendChild(new_cell);
-        new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(JSON.parse(xhttp.responseText)[2])); new_row.appendChild(new_cell);
-        new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(JSON.parse(xhttp.responseText)[3])); new_row.appendChild(new_cell);
-        tbdy.appendChild(new_row);
-      }
-
-    }
+    });
 
   }
 
