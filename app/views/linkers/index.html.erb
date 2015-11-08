@@ -8,71 +8,66 @@
   </div>
   <div class="form-group">
     <%= label_tag %>
-    <%= text_field_tag 'search_term', "", {:placeholder => 'Search term here', :class => 'form-control'} %>
+    <%= text_field_tag 'search-term', "", {:placeholder => 'Search term here', :class => 'form-control'} %>
   </div>
   <%= submit_tag 'Process URLs', class: 'btn btn-default' %>
-  <%= link_to 'Test', 'javascript:void(0)', :onclick => 'readCSVFile()', class: 'btn btn-default' %>
+  <button class='btn btn-default' id='test-button'>Test</button>
 <% end %>
 
-<div id="testdiv"></div>
+<div id="test-results">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>URL</th>
+        <th>HTTP code</th>
+        <th>HTTP status</th>
+        <th>Redirect</th>
+        <th>Search term exists?</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 
 <script>
-function readCSVFile() {
+$(function() {
+  $('#test-button').click(function(e) {
+    e.preventDefault();
+    $('#test-results').show();
+    readCSVFile();
+  });
 
-  var tbl = document.createElement('table'); tbl.className = "table";
-  var thd = document.createElement('thead');
-  var thdr = document.createElement('tr');
-  var tbdy = document.createElement('tbody');
-  var th1 = document.createElement('th'); th1.appendChild(document.createTextNode('URL'));
-  var th2 = document.createElement('th'); th2.appendChild(document.createTextNode('HTTP Code'));
-  var th3 = document.createElement('th'); th3.appendChild(document.createTextNode('HTTP Status'));
-  var th4 = document.createElement('th'); th4.appendChild(document.createTextNode('Redirect'));
-  var th5 = document.createElement('th'); th5.appendChild(document.createTextNode('Search Term Exists?'));
+  var readCSVFile = function() {
+    var csvContents = document.getElementById("CSVfile").files[0],
+        reader = new FileReader();
 
-  thdr.appendChild(th1);
-  thdr.appendChild(th2);
-  thdr.appendChild(th3);
-  thdr.appendChild(th4);
-  thdr.appendChild(th5);
+    reader.onload = function(event) {
+      var lines = reader.result.split('\n');
 
-  thd.appendChild(thdr);
-  tbl.appendChild(thd);
-  tbl.appendChild(tbdy);
+      lines.forEach(function(line) {
+        var $tr = $('<tr>'),
+            request = new XMLHttpRequest(),
+            url = '<%= ping_url_path %>?url_string=' + encodeURIComponent(line) + '&search_term=' + encodeURIComponent($('#search-term').val());
 
-  document.getElementById('testdiv').appendChild(tbl);
+        $tr.append($('<td>' + line + '</td>'));
+        request.open('GET', url);
+        request.onreadystatechange = function() {
+          if (request.status === 200 && request.readyState === XMLHttpRequest.DONE) {
+            var response = JSON.parse(request.responseText);
+            response.forEach(function(item) {
+              $tr.append($('<td>' + item + '</td>'));
+            });
+            $('#test-results tbody').append($tr);
+          }
+        };
+        request.send();
+      });
+    };
 
-  var csv_list = document.getElementById("CSVfile").files[0];
-  var reader = new FileReader();
+    reader.readAsText(csvContents);
+  };
+});
 
-  reader.onload = function(event) {
-
-    var lines = reader.result.split('\n');
-
-    for(var i = 0; i < lines.length; i+=1) {
-
-      var new_row = document.createElement('tr');
-      var new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(lines[i]));
-      new_row.appendChild(new_cell);
-
-      var xhttp = new XMLHttpRequest();
-      xhttp.open("GET", "http://linkfixer.herokuapp.com/ping_url?url_string=" + encodeURIComponent(lines[i]) + "&search_term=" + encodeURIComponent(document.getElementById('search_term').value), false);
-      xhttp.send();
-      if (xhttp.readyState == 4 && xhttp.status == 200) {
-        console.log(xhttp.responseText);
-        new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(JSON.parse(xhttp.responseText)[0])); new_row.appendChild(new_cell);
-        new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(JSON.parse(xhttp.responseText)[1])); new_row.appendChild(new_cell);
-        new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(JSON.parse(xhttp.responseText)[2])); new_row.appendChild(new_cell);
-        new_cell = document.createElement('td'); new_cell.appendChild(document.createTextNode(JSON.parse(xhttp.responseText)[3])); new_row.appendChild(new_cell);
-        tbdy.appendChild(new_row);
-      }
-
-    }
-
-  }
-
-  reader.readAsText(csv_list);
-
-}
 </script>
 
 <p>&nbsp;</p>
