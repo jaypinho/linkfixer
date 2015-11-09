@@ -2,7 +2,7 @@
 
 <h1>URL Diagnostics</h1>
 
-<%= form_tag({action: :uploader}, multipart: true, class: 'form') do %>
+<%= form_tag(multipart: true, class: 'form') do %>
   <div class="form-group">
     <%= file_field_tag 'CSVfile' %>
   </div>
@@ -10,8 +10,7 @@
     <%= label_tag %>
     <%= text_field_tag 'search-term', "", {:placeholder => 'Search term here', :class => 'form-control'} %>
   </div>
-  <%= submit_tag 'Process URLs', class: 'btn btn-default' %>
-  <button class='btn btn-default' id='test-button'>Test</button>
+  <button class='btn btn-default' id='test-button'>Process URLs</button>
 <% end %>
 
 <div id="test-results">
@@ -33,11 +32,9 @@
 
 <h3>Instructions</h3>
 <p/>
-Choose a CSV file -- <em>it must be in CSV format only</em> -- and upload it here. The file must have <em>NO</em> header row, and the last column must be a list of URLs including the leading "http://" or "https://" portions. If you wish to include additional columns, they must all be placed to the left of this URLs column. All columns in your CSV file will be included in the processed output file.
+Choose a CSV file -- <em>it must be in CSV format only</em> -- and upload it here. The file must have <em>NO</em> header row and only one column: a list of URLs including the leading "http://" or "https://" portions.
 <p/>
-<strong>To avoid taxing the web page servers, only the first 50 rows of any CSV file will be processed.</strong> If you need to process more than 50 rows, break up your list into multiple CSV files.
-<p/>
-Once you've hit the "Process URLs" button, do <em>NOT</em> press the button again. Just wait until the app has pinged all of the URLs, at which point a popup window will appear to save the results to a new CSV file. This new file will contain all of the original file's columns, as well as four additional ones:
+Once you've hit the "Process URLs" button, do <em>NOT</em> press the button again. Just wait until the app has pinged all of the URLs. The resulting table will contain the original file's URLs, as well as four additional fields:
 <p/>
 1) HTTP Code
 <br>
