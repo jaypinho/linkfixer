@@ -2,6 +2,7 @@ $ ->
   $('#test-button').click (e) ->
     e.preventDefault()
     $('#test-results').show()
+    $('#test-results tbody tr').remove()
     readCSVFile()
 
   readCSVFile = ->

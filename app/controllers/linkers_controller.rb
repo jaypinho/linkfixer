@@ -21,13 +21,13 @@ class LinkersController < ApplicationController
 						# If redirected, find the final destination URL
 						final_redir = get_final_redirect(res['location'])
 						if params[:search_term] != ""
-							render json: [res.code, res.message, final_redir, res.body.include?(params[:search_term]).to_s].to_json
+							render json: [res.code, res.message, final_redir, res.body.downcase.include?(params[:search_term].downcase).to_s].to_json
 						else
 							render json: [res.code, res.message, final_redir, ""].to_json
 						end
 					else
 						if params[:search_term] != ""
-							render json: [res.code, res.message, "", res.body.include?(params[:search_term]).to_s].to_json
+							render json: [res.code, res.message, "", res.body.downcase.include?(params[:search_term].downcase).to_s].to_json
 						else
 							render json: [res.code, res.message, "", ""].to_json
 						end
