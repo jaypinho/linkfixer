@@ -1,3 +1,24 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
+$ ->
+  $('#test-button').click (e) ->
+    e.preventDefault()
+    $('#test-results').show()
+    readCSVFile()
+
+  readCSVFile = ->
+    csvContents = $('#CSVfile')[0].files[0]
+    reader = new FileReader()
+
+    reader.onload = (event) ->
+      reader.result.split('\n').forEach (line) ->
+        $tr = $('<tr>')
+        $tr.append $('<td>' + line + '</td>')
+
+        requestParams =
+          url_string: line
+          search_term: $('#search-term').val()
+
+        $.getJSON('/ping_url', requestParams).done (result) ->
+          result.forEach (item) -> $tr.append $('<td>' + item + '</td>')
+          $('#test-results tbody').append $tr
+
+    reader.readAsText(csvContents)
