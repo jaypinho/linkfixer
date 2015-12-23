@@ -1,6 +1,17 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require 'capybara/poltergeist'
+Capybara.default_driver    = :poltergeist
+Capybara.javascript_driver = :poltergeist
+Capybara.register_driver :poltergeist do |app|
+  options = {
+    :js_errors => true,
+    :timeout => 20,
+    :debug => true
+  }
+  Capybara::Poltergeist::Driver.new(app, options)
+end
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
