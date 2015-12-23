@@ -1,13 +1,13 @@
-<div class="col-xs-12 col-md-9">
+<div class="col-md-3 hidden-xs"></div>
+<div class="col-xs-12 col-md-6">
 
-<h1>URL Diagnostics</h1>
-
-<%= form_tag(multipart: true, class: 'form') do %>
+<h1>tag check</h1>
+<br>
+<%= form_tag('', {multipart: true, class: 'form'}) do %>
   <div class="form-group">
     <%= file_field_tag 'CSVfile' %>
   </div>
   <div class="form-group">
-    <%= label_tag %>
     <%= text_field_tag 'search-term', "", {:placeholder => 'Search term here', :class => 'form-control'} %>
   </div>
   <div class="form-group">
@@ -33,8 +33,8 @@
 </div>
 
 <p>&nbsp;</p>
-
-<h3>Instructions</h3>
+<div class="instructions">
+<h3>instructions</h3>
 <p/>
 Choose a CSV file -- <em>it must be in CSV format only</em> -- and upload it here. The file must have <em>NO</em> header row and only one column: a list of URLs including the leading "http://" or "https://" portions.
 <p/>
@@ -46,6 +46,7 @@ Once you've hit the "Process URLs" button, do <em>NOT</em> press the button agai
 <br>
 3) Redirect (if applicable): up to 5 successive redirects for any given URL will be pinged, and the last one will be returned
 <br>
-4) Search term existence (if applicable): if a search term has been entered, indicates whether it exists in the returned HTML
-
+4) Search term existence (if applicable): if a search term has been entered, indicates whether it exists in the returned HTML (if the box above is checked, then the dynamically fired tags will be searched as well)
 </div>
+</div>
+<div class="col-md-3 hidden-xs"></div>
