@@ -15,8 +15,6 @@ class LinkersController < ApplicationController
 
 				begin
 
-					puts params[:include_dynamic_tags]
-
 					uri = URI(params[:url_string])
 					res = Net::HTTP.get_response(uri)
 					term_found = false
