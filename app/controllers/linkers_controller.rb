@@ -13,7 +13,7 @@ class LinkersController < ApplicationController
 
 			format.json {
 
-				begin
+				# begin
 
 					uri = URI(params[:url_string])
 					res = Net::HTTP.get_response(uri)
@@ -48,11 +48,11 @@ class LinkersController < ApplicationController
 					# sleep 1
 
 				# In case of error...
-				rescue
+				# rescue
 
-					render json: ["", "Couldn't ping", "", ""].to_json
+					# render json: ["", "Couldn't ping", "", ""].to_json
 
-				end
+				# end
 
 			}
 
