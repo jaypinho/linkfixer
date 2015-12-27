@@ -1,17 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-require 'capybara/poltergeist'
-Capybara.default_driver    = :poltergeist
-Capybara.javascript_driver = :poltergeist
-Capybara.register_driver :poltergeist do |app|
-  options = {
-    :js_errors => false,
-    :timeout => 20,
-    :debug => true
-  }
-  Capybara::Poltergeist::Driver.new(app, options)
-end
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -30,5 +19,11 @@ module Linkfixer
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+
+    Aws.config.update({
+      region: ENV['AWS_REGION'],
+      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'])
+      })
+
   end
 end
