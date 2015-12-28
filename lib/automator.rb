@@ -131,4 +131,47 @@ module Automator
 
   end
 
+  def self.aggregate_headlines_and_take_snapshot site
+
+    Capybara.javascript_driver = :poltergeist
+    Capybara.current_driver = :poltergeist
+
+    Capybara.register_driver :poltergeist do |app|
+      options = {
+        :js_errors => false,
+        :timeout => 30,
+        :debug => false,
+        :window_size => [1024,768]
+      }
+      Capybara::Poltergeist::Driver.new(app, options)
+    end
+
+    session = Capybara::Session.new(:poltergeist)
+
+    session.driver.headers = { "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36" }
+    session.visit site.url       # go to a web page (first request will take a bit)
+
+    snapshot_name = "#{site.shortcode}-#{ Time.now.to_i }.png"
+
+    headlines = session.all(:css, "#{site.selector}")
+
+    headlines.each do |headline|
+      new_headline = Headline.new :title => headline.text, :url => headline[:href], :snapshot => snapshot_name, :site => site
+      new_headline.save
+    end
+
+    session.execute_script('function loopWithDelay() { setTimeout(function () { if (document.body.scrollTop > 1024) { window.scrollBy(0,-1024); loopWithDelay(); } else { window.scrollTo(0,0); return; } },1000); }; window.scrollTo(0,document.body.scrollHeight); loopWithDelay();')
+
+    sleep 10
+
+    s3 = Aws::S3::Resource.new
+    bucket = s3.bucket(ENV['S3_BUCKET'])
+    obj = bucket.object(snapshot_name)
+    obj.put(body: Base64.decode64(session.driver.render_base64(:png, full: true)))
+    obj.etag
+
+    session.driver.quit
+
+  end
+
 end

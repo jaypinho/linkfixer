@@ -18,3 +18,14 @@ task :get_nyt_headlines => :environment do
   # Automator.aggregate_headlines 'http://www.wsj.com/', 'a.wsj-headline-link'
   Automator.aggregate_headlines 'https://www.washingtonpost.com/', 'a[data-pb-field="web_headline"]'
 end
+
+desc "This task saves all headlines and takes a snapshot on all the site home pages"
+task :save_headlines_and_take_snapshot => :environment do
+
+  sites = Site.all
+
+  sites.each do |site|
+    Automator.aggregate_headlines_and_take_snapshot site
+  end
+
+end
