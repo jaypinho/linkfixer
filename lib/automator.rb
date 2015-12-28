@@ -156,8 +156,15 @@ module Automator
     headlines = session.all(:css, "#{site.selector}")
 
     headlines.each do |headline|
-      new_headline = Headline.new :title => headline.text, :url => headline[:href], :snapshot => snapshot_name, :site => site
-      new_headline.save
+
+      begin
+
+        new_headline = Headline.new :title => headline.text, :url => headline[:href], :snapshot => snapshot_name, :site => site
+        new_headline.save
+
+      rescue
+      end
+
     end
 
     session.execute_script('function loopWithDelay() { setTimeout(function () { if (document.body.scrollTop > 1024) { window.scrollBy(0,-1024); loopWithDelay(); } else { window.scrollTo(0,0); return; } },1000); }; window.scrollTo(0,document.body.scrollHeight); loopWithDelay();')
