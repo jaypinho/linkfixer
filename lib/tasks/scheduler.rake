@@ -4,7 +4,7 @@ task :create_screenshots => :environment do
   sites_list = {
     'wapo' => 'https://www.washingtonpost.com/',
     'nyt' => 'http://www.nytimes.com/',
-    'usatoday' => 'http://www.usatoday.com/',
+  #  'usatoday' => 'http://www.usatoday.com/',
     'wsj' => 'http://www.wsj.com/'
   }
 
