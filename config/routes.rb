@@ -10,6 +10,9 @@ Linkfixer::Application.routes.draw do
 
   get 'ping_url' => 'linkers#ping'
 
+  resources :snapshots, :only => [:index]
+  resources :sites, :only => [:index]
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
