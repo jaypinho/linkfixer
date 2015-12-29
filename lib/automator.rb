@@ -152,6 +152,8 @@ module Automator
     session.visit site.url       # go to a web page (first request will take a bit)
 
     snapshot_name = "#{site.shortcode}-#{ Time.now.strftime("%Y-%m-%d-%H-%M-%z") }.png"
+    new_snapshot = Snapshot.new :filename => snapshot_name, :site => site
+    new_snapshot.save
 
     headlines = session.all(:css, "#{site.selector}")
 
@@ -159,7 +161,7 @@ module Automator
 
       begin
 
-        new_headline = Headline.new :title => headline.text, :url => headline[:href], :snapshot => snapshot_name, :site => site
+        new_headline = Headline.new :title => headline.text, :url => headline[:href], :snapshot => new_snapshot, :site => site
         new_headline.save
 
       rescue
