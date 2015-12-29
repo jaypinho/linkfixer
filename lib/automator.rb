@@ -26,17 +26,17 @@ module Automator
       puts url
       # puts session.evaluate_script("document.body.scrollHeight")
       puts session.windows[0].size
-      session.driver.resize(1024,session.evaluate_script("document.body.scrollHeight").to_i)
-      puts session.windows[0].size
+      # session.driver.resize(1024,session.evaluate_script("document.body.scrollHeight").to_i)
+      # puts session.windows[0].size
 
-      # session.execute_script('function loopWithDelay() { setTimeout(function () { if (document.body.scrollTop > 1024) { window.scrollBy(0,-1024); loopWithDelay(); } else { window.scrollTo(0,0); return; } },1000); }; setTimeout(function() {window.scrollTo(0,document.body.scrollHeight); loopWithDelay();},2000);')
+      session.execute_script('function loopWithDelay() { setTimeout(function () { if (document.body.scrollTop > 1024) { window.scrollBy(0,-1024); loopWithDelay(); } else { window.scrollTo(0,0); return; } },1000); }; window.scrollTo(0,document.body.scrollHeight); loopWithDelay();')
 
       sleep 20
 
   		s3 = Aws::S3::Resource.new
   		bucket = s3.bucket(ENV['S3_BUCKET'])
   		obj = bucket.object("#{title}-#{ Time.now.to_i }.png")
-  		obj.put(body: Base64.decode64(session.driver.render_base64(:png, full: false)))
+  		obj.put(body: Base64.decode64(session.driver.render_base64(:png, full: true)))
   		obj.etag
 
       session.driver.quit
