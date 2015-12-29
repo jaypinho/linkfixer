@@ -25,8 +25,8 @@ module Automator
   		session.visit url       # go to a web page (first request will take a bit)
 
       sleep 10
-      session.driver.save_screenshot('capture_high.png', {:quality => '100'});
-      session.driver.save_screenshot('capture_low.png', {:quality => '1'});
+      # session.driver.save_screenshot('capture_high.png', :full => true);
+      # session.driver.save_screenshot('capture_low.png', :full => false);
 
       if save_to_s3
 
@@ -37,7 +37,7 @@ module Automator
     		s3 = Aws::S3::Resource.new
     		bucket = s3.bucket(ENV['S3_BUCKET'])
     		obj = bucket.object("#{title}-#{ Time.now.strftime("%Y-%m-%d-%H-%M-%z") }.png")
-    		obj.put(body: Base64.decode64(session.driver.render_base64(:png, full: true)))
+    		obj.put(body: Base64.decode64(session.driver.render_base64(:png, full: false)))
     		obj.etag
 
       end

@@ -8,7 +8,7 @@ task :create_screenshots => :environment do
   #  'wsj' => 'http://www.wsj.com/'
   }
 
-  Automator.create_screenshot sites_list, false
+  Automator.create_screenshot sites_list, true
 
 end
 
