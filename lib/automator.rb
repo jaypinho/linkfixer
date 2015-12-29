@@ -2,7 +2,7 @@ module Automator
 
   require 'net/http'
 
-  def self.create_screenshot sites_list
+  def self.create_screenshot sites_list, save_to_s3 = true
 
     sites_list.each do |title, url|
 
@@ -13,7 +13,7 @@ module Automator
         options = {
           :js_errors => false,
           :timeout => 60,
-          :debug => false,
+          :debug => true,
           :window_size => [1024,768]
         }
         Capybara::Poltergeist::Driver.new(app, options)
@@ -24,15 +24,23 @@ module Automator
   		session.driver.headers = { 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36' }
   		session.visit url       # go to a web page (first request will take a bit)
 
-      session.execute_script('function loopWithDelay() { setTimeout(function () { if (document.body.scrollTop > 1024) { window.scrollBy(0,-1024); loopWithDelay(); } else { window.scrollTo(0,0); return; } },1000); }; window.scrollTo(0,document.body.scrollHeight); loopWithDelay();')
+      sleep 10
+      session.driver.save_screenshot('capture_high.png', {:quality => '100'});
+      session.driver.save_screenshot('capture_low.png', {:quality => '1'});
 
-      sleep 20
+      if save_to_s3
 
-  		s3 = Aws::S3::Resource.new
-  		bucket = s3.bucket(ENV['S3_BUCKET'])
-  		obj = bucket.object("#{title}-#{ Time.now.strftime("%Y-%m-%d-%H-%M-%z") }.png")
-  		obj.put(body: Base64.decode64(session.driver.render_base64(:png, full: true)))
-  		obj.etag
+        session.execute_script('function loopWithDelay() { setTimeout(function () { if (document.body.scrollTop > 1024) { window.scrollBy(0,-1024); loopWithDelay(); } else { window.scrollTo(0,0); return; } },1000); }; window.scrollTo(0,document.body.scrollHeight); loopWithDelay();')
+
+        sleep 20
+
+    		s3 = Aws::S3::Resource.new
+    		bucket = s3.bucket(ENV['S3_BUCKET'])
+    		obj = bucket.object("#{title}-#{ Time.now.strftime("%Y-%m-%d-%H-%M-%z") }.png")
+    		obj.put(body: Base64.decode64(session.driver.render_base64(:png, full: true)))
+    		obj.etag
+
+      end
 
       session.driver.quit
 
