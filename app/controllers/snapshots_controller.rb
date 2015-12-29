@@ -5,7 +5,7 @@ class SnapshotsController < ApplicationController
 	def index
 
 		@snapshots = Snapshot.all
-		render :json => @snapshots, :include => {:site => {:only => :name}}
+		render :json => @snapshots
 
 	end
 
