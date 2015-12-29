@@ -23,11 +23,6 @@ module Automator
 
   		session.driver.headers = { 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36' }
   		session.visit url       # go to a web page (first request will take a bit)
-      puts url
-      # puts session.evaluate_script("document.body.scrollHeight")
-      puts session.windows[0].size
-      # session.driver.resize(1024,session.evaluate_script("document.body.scrollHeight").to_i)
-      # puts session.windows[0].size
 
       session.execute_script('function loopWithDelay() { setTimeout(function () { if (document.body.scrollTop > 1024) { window.scrollBy(0,-1024); loopWithDelay(); } else { window.scrollTo(0,0); return; } },1000); }; window.scrollTo(0,document.body.scrollHeight); loopWithDelay();')
 
@@ -35,7 +30,7 @@ module Automator
 
   		s3 = Aws::S3::Resource.new
   		bucket = s3.bucket(ENV['S3_BUCKET'])
-  		obj = bucket.object("#{title}-#{ Time.now.to_i }.png")
+  		obj = bucket.object("#{title}-#{ Time.now.strftime("%Y-%m-%d-%H-%M-%Z") }.png")
   		obj.put(body: Base64.decode64(session.driver.render_base64(:png, full: true)))
   		obj.etag
 
@@ -156,7 +151,7 @@ module Automator
     session.driver.headers = { "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36" }
     session.visit site.url       # go to a web page (first request will take a bit)
 
-    snapshot_name = "#{site.shortcode}-#{ Time.now.to_i }.png"
+    snapshot_name = "#{site.shortcode}-#{ Time.now.strftime("%Y-%m-%d-%H-%M-%Z") }.png"
 
     headlines = session.all(:css, "#{site.selector}")
 
@@ -174,7 +169,7 @@ module Automator
 
     session.execute_script('function loopWithDelay() { setTimeout(function () { if (document.body.scrollTop > 1024) { window.scrollBy(0,-1024); loopWithDelay(); } else { window.scrollTo(0,0); return; } },1000); }; window.scrollTo(0,document.body.scrollHeight); loopWithDelay();')
 
-    sleep 10
+    sleep 20
 
     s3 = Aws::S3::Resource.new
     bucket = s3.bucket(ENV['S3_BUCKET'])
