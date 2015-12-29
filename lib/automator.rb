@@ -30,7 +30,7 @@ module Automator
 
   		s3 = Aws::S3::Resource.new
   		bucket = s3.bucket(ENV['S3_BUCKET'])
-  		obj = bucket.object("#{title}-#{ Time.now.strftime("%Y-%m-%d-%H-%M-%Z") }.png")
+  		obj = bucket.object("#{title}-#{ Time.now.strftime("%Y-%m-%d-%H-%M-%z") }.png")
   		obj.put(body: Base64.decode64(session.driver.render_base64(:png, full: true)))
   		obj.etag
 
@@ -151,7 +151,7 @@ module Automator
     session.driver.headers = { "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36" }
     session.visit site.url       # go to a web page (first request will take a bit)
 
-    snapshot_name = "#{site.shortcode}-#{ Time.now.strftime("%Y-%m-%d-%H-%M-%Z") }.png"
+    snapshot_name = "#{site.shortcode}-#{ Time.now.strftime("%Y-%m-%d-%H-%M-%z") }.png"
 
     headlines = session.all(:css, "#{site.selector}")
 
