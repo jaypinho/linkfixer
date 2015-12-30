@@ -25,7 +25,7 @@ module Automator
   		session.visit url       # go to a web page (first request will take a bit)
 
       sleep 10
-      # session.driver.save_screenshot('capture_high.png', :full => true);
+      session.driver.save_screenshot('capture_high', {:format => 'jpeg', :quality => '100'});
       # session.driver.save_screenshot('capture_low.png', :full => false);
 
       if save_to_s3

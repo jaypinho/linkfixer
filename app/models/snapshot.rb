@@ -9,11 +9,9 @@ class Snapshot < ActiveRecord::Base
 
   def as_json(options={})
       super(:methods => [:file_path],
-            :include => {
-              :site => {:only => [:name]}
-            },
-            :except => [:filename]
+            :except => [:filename],
+            :root => true
       )
-    end
+  end
 
 end
