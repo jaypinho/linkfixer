@@ -5,7 +5,7 @@ class SnapshotsController < ApplicationController
 	def index
 
 		@snapshots = Snapshot.all
-		render :json => @snapshots
+		render json: {snapshots: @snapshots}
 
 	end
 

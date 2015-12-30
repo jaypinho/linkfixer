@@ -5,7 +5,7 @@ class SitesController < ApplicationController
 	def index
 
 		@sites = Site.all
-		render :json => @sites
+		render json: {sites: @sites}
 
 	end
 

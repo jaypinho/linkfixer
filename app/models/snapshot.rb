@@ -9,8 +9,7 @@ class Snapshot < ActiveRecord::Base
 
   def as_json(options={})
       super(:methods => [:file_path],
-            :except => [:filename],
-            :root => true
+            :except => [:filename]
       )
   end
 
