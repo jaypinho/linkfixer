@@ -24,10 +24,6 @@ module Automator
   		session.driver.headers = { 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36' }
   		session.visit url       # go to a web page (first request will take a bit)
 
-      sleep 10
-      session.driver.save_screenshot('capture_high', {:format => 'jpeg', :quality => '100'});
-      # session.driver.save_screenshot('capture_low.png', :full => false);
-
       if save_to_s3
 
         session.execute_script('function loopWithDelay() { setTimeout(function () { if (document.body.scrollTop > 1024) { window.scrollBy(0,-1024); loopWithDelay(); } else { window.scrollTo(0,0); return; } },1000); }; window.scrollTo(0,document.body.scrollHeight); loopWithDelay();')
@@ -39,6 +35,11 @@ module Automator
     		obj = bucket.object("#{title}-#{ Time.now.strftime("%Y-%m-%d-%H-%M-%z") }.png")
     		obj.put(body: Base64.decode64(session.driver.render_base64(:png, full: false)))
     		obj.etag
+
+      else
+
+        sleep 10
+        session.driver.save_screenshot('capture.png', :full => false)
 
       end
 

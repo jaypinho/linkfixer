@@ -38,7 +38,6 @@ end
 # gem 'poltergeist', :git => 'https://github.com/jaypinho/poltergeist.git', :branch => 'patch-1'
 gem 'poltergeist'
 
-
 gem 'puma'
 
 gem 'aws-sdk'
