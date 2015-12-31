@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.2'
+gem 'rails', '4.2.5'
 
 gem 'pg'
 
@@ -41,6 +41,8 @@ gem 'poltergeist'
 gem 'puma'
 
 gem 'aws-sdk'
+
+gem 'responders', '~> 2.0'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
