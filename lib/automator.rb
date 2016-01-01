@@ -1,6 +1,7 @@
 module Automator
 
   require 'net/http'
+  require 'rmagick'
 
   def self.create_screenshot sites_list, save_to_s3 = true
 
@@ -13,7 +14,7 @@ module Automator
         options = {
           :js_errors => false,
           :timeout => 60,
-          :debug => true,
+          :debug => false,
           :window_size => [1024,768]
         }
         Capybara::Poltergeist::Driver.new(app, options)
@@ -30,16 +31,24 @@ module Automator
 
         sleep 20
 
-    		s3 = Aws::S3::Resource.new
-    		bucket = s3.bucket(ENV['S3_BUCKET'])
-    		obj = bucket.object("#{title}-#{ Time.now.strftime("%Y-%m-%d-%H-%M-%z") }.png")
-    		obj.put(body: Base64.decode64(session.driver.render_base64(:png, full: false)))
-    		obj.etag
+        images_arr = []
+        images_arr << Base64.decode64(session.driver.render_base64(:png, full: true))
+        images_arr << Magick::Image.from_blob(images_arr[0]).first.resize_to_fill(300,300,Magick::NorthWestGravity).to_blob
+
+        images_arr.each_with_index do |image, index|
+
+          s3 = Aws::S3::Resource.new
+          bucket = s3.bucket(ENV['S3_BUCKET'])
+          obj = bucket.object("#{index}-#{title}-#{ Time.now.strftime("%Y-%m-%d-%H-%M-%z") }.png")
+          obj.put(body: image)
+          obj.etag
+
+        end
 
       else
 
         sleep 10
-        session.driver.save_screenshot('capture.png', :full => false)
+        session.driver.save_screenshot('capture.png', :full => true)
 
       end
 
@@ -140,7 +149,7 @@ module Automator
 
   end
 
-  def self.aggregate_headlines_and_take_snapshot site
+  def self.aggregate_headlines_and_take_snapshot site, thumbnail = false
 
     Capybara.javascript_driver = :poltergeist
     Capybara.current_driver = :poltergeist
@@ -182,13 +191,35 @@ module Automator
 
     sleep 20
 
-    s3 = Aws::S3::Resource.new
-    bucket = s3.bucket(ENV['S3_BUCKET'])
-    obj = bucket.object(snapshot_name)
-    obj.put(body: Base64.decode64(session.driver.render_base64(:png, full: true)))
-    obj.etag
+    images_arr = []
+    images_arr << Base64.decode64(session.driver.render_base64(:png, full: true))
+    images_arr << Magick::Image.from_blob(images_arr[0]).first.resize_to_fill(300,300,Magick::NorthWestGravity).to_blob
+
+    images_arr.each_with_index do |image, index|
+
+      s3 = Aws::S3::Resource.new
+      bucket = s3.bucket(ENV['S3_BUCKET'])
+      if index == 0
+        obj = bucket.object(snapshot_name)
+      else
+        obj = bucket.object(("thumb-" + snapshot_name))
+      end
+      obj.put(body: image)
+      obj.etag
+
+    end
 
     session.driver.quit
+
+  end
+
+  def self.create_thumbnail image, to_file_too = false
+
+    source = Magick::Image.read(image).first
+    source = source.resize_to_fill(300,300,Magick::NorthWestGravity)
+
+    source.write("capture_thumb.png") if to_file_too
+
 
   end
 

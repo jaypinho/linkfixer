@@ -2,13 +2,13 @@ desc "This task takes screenshots of newspaper front pages and saves them to S3"
 task :create_screenshots => :environment do
 
   sites_list = {
-  #  'wapo' => 'https://www.washingtonpost.com/',
+  'wapo' => 'https://www.washingtonpost.com/',
   'nyt' => 'http://www.nytimes.com/'
   #  'usatoday' => 'http://www.usatoday.com/',
   #  'wsj' => 'http://www.wsj.com/'
   }
 
-  Automator.create_screenshot sites_list, false
+  Automator.create_screenshot sites_list, true
 
 end
 
@@ -27,5 +27,12 @@ task :save_headlines_and_take_snapshot => :environment do
   sites.each do |site|
     Automator.aggregate_headlines_and_take_snapshot site
   end
+
+end
+
+desc "This task tests thumbnail creation"
+task :create_thumbnail => :environment do
+
+  Automator.create_thumbnail "#{Rails.root.to_s}/capture.png"
 
 end
