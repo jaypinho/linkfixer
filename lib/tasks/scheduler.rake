@@ -52,7 +52,7 @@ task :generate_thumbnails => :environment do
     s3 = Aws::S3::Resource.new
     bucket = s3.bucket(ENV['S3_BUCKET'])
     obj = bucket.object(("thumb-" + pic.filename))
-    obj.put(body: image)
+    obj.put(body: thumb)
     obj.etag
 
     pic.thumbnail = ("thumb-" + pic.filename)
