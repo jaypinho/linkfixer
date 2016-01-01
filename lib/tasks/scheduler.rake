@@ -36,3 +36,27 @@ task :create_thumbnail => :environment do
   Automator.create_thumbnail "#{Rails.root.to_s}/capture.png"
 
 end
+
+desc "This task creates thumbnails for all screenshots without them"
+task :generate_thumbnails => :environment do
+
+  require 'rmagick'
+
+  needs_thumbnails = Snapshot.where(:thumbnail => nil)
+
+  needs_thumbnails.each do |pic|
+
+    thumb = Magick::Image.read((ENV['S3_FILE_PREFIX'] + pic.filename)).first.resize_to_fill(300,300,Magick::NorthWestGravity).to_blob
+
+    s3 = Aws::S3::Resource.new
+    bucket = s3.bucket(ENV['S3_BUCKET'])
+    obj = bucket.object(("thumb-" + pic.filename))
+    obj.put(body: image)
+    obj.etag
+
+    pic.thumbnail = ("thumb-" + pic.filename)
+    pic.save
+
+  end
+
+end
