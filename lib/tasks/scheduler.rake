@@ -46,6 +46,7 @@ task :generate_thumbnails => :environment do
 
   needs_thumbnails.each do |pic|
 
+    puts (ENV['S3_FILE_PREFIX'] + pic.filename)
     thumb = Magick::Image.read((ENV['S3_FILE_PREFIX'] + pic.filename)).first.resize_to_fill(300,300,Magick::NorthWestGravity).to_blob
 
     s3 = Aws::S3::Resource.new
