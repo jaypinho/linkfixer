@@ -25,7 +25,7 @@ task :save_headlines_and_take_snapshot => :environment do
   sites = Site.all
 
   sites.each do |site|
-    Automator.aggregate_headlines_and_take_snapshot site
+    Automator.aggregate_headlines_and_take_snapshot site, true
   end
 
 end

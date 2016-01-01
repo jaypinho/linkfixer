@@ -170,7 +170,11 @@ module Automator
     session.visit site.url       # go to a web page (first request will take a bit)
 
     snapshot_name = "#{site.shortcode}-#{ Time.now.strftime("%Y-%m-%d-%H-%M-%z") }.png"
-    new_snapshot = Snapshot.new :filename => snapshot_name, :site => site
+    if thumbnail
+      new_snapshot = Snapshot.new :filename => snapshot_name, :thumbnail => ("thumb-" + snapshot_name), :site => site
+    else
+      new_snapshot = Snapshot.new :filename => snapshot_name, :site => site
+    end
     new_snapshot.save
 
     headlines = session.all(:css, "#{site.selector}")
@@ -193,7 +197,7 @@ module Automator
 
     images_arr = []
     images_arr << Base64.decode64(session.driver.render_base64(:png, full: true))
-    images_arr << Magick::Image.from_blob(images_arr[0]).first.resize_to_fill(300,300,Magick::NorthWestGravity).to_blob
+    images_arr << Magick::Image.from_blob(images_arr[0]).first.resize_to_fill(300,300,Magick::NorthWestGravity).to_blob if thumbnail
 
     images_arr.each_with_index do |image, index|
 

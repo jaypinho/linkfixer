@@ -11,14 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151229151300) do
+ActiveRecord::Schema.define(version: 20160101025142) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "headlines", force: true do |t|
-    t.string   "title"
-    t.string   "url"
+  create_table "headlines", force: :cascade do |t|
+    t.string   "title",       limit: 255
+    t.string   "url",         limit: 255
     t.integer  "site_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -28,23 +28,24 @@ ActiveRecord::Schema.define(version: 20151229151300) do
   add_index "headlines", ["site_id"], name: "index_headlines_on_site_id", using: :btree
   add_index "headlines", ["snapshot_id"], name: "index_headlines_on_snapshot_id", using: :btree
 
-  create_table "sites", force: true do |t|
-    t.string   "name"
-    t.string   "url"
-    t.string   "selector"
-    t.string   "shortcode"
+  create_table "sites", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.string   "url",        limit: 255
+    t.string   "selector",   limit: 255
+    t.string   "shortcode",  limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "snapshots", force: true do |t|
-    t.string   "filename"
+  create_table "snapshots", force: :cascade do |t|
+    t.string   "filename",   limit: 255
     t.integer  "height"
     t.integer  "width"
     t.integer  "size"
     t.integer  "site_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "thumbnail"
   end
 
   add_index "snapshots", ["site_id"], name: "index_snapshots_on_site_id", using: :btree
