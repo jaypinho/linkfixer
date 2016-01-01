@@ -4,7 +4,11 @@ class Snapshot < ActiveRecord::Base
 
   def file_path
     # gsub is required due to Amazon S3 encoding glitch: https://bugs.launchpad.net/ubuntu/+source/apt/+bug/1003633
-    ENV['S3_FILE_PREFIX'] + thumbnail.gsub("+", "%2B")
+    unless thumbnail.nil?
+      ENV['S3_FILE_PREFIX'] + thumbnail.gsub("+", "%2B")
+    else
+      ENV['S3_FILE_PREFIX'] + filename.gsub("+", "%2B")
+    end
   end
 
   def as_json(options={})
