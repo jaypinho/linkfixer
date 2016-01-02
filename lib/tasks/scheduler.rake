@@ -9,7 +9,7 @@ task :create_screenshots => :environment do
   'guardian' => 'http://www.theguardian.com/us'
   }
 
-  Automator.create_screenshot sites_list, true
+  Automator.create_screenshot sites_list, false
 
 end
 
@@ -17,7 +17,7 @@ desc "This task outputs all headlines currently on the NYT home page"
 task :get_nyt_headlines => :environment do
   # Automator.aggregate_headlines 'http://www.nytimes.com', '.story-heading'
   # Automator.aggregate_headlines 'http://www.wsj.com/', 'a.wsj-headline-link'
-  Automator.aggregate_headlines 'https://www.washingtonpost.com/', 'a[data-pb-field="web_headline"]'
+  Automator.aggregate_headlines 'http://www.theguardian.com/us', 'a[data-link-name="article"]'
 end
 
 desc "This task saves all headlines and takes a snapshot on all the site home pages"
