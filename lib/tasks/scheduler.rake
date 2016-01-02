@@ -62,3 +62,27 @@ task :generate_thumbnails => :environment do
   end
 
 end
+
+desc "This task generates stories from headlines"
+task :generate_stories => :environment do
+
+  all_headlines = Headline.all
+
+  all_headlines.each do |headline|
+    if Story.where(:url => headline.url).count == 0
+
+      new_story = Story.new :url => headline.url, :site => headline.site
+      new_story.save
+
+      headline.story = new_story
+      headline.save
+
+    else
+
+      headline.story = Story.where(:url => headline.url).first
+      headline.save
+
+    end
+  end
+
+end

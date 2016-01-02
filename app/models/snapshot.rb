@@ -1,6 +1,7 @@
 class Snapshot < ActiveRecord::Base
   belongs_to :site
   has_many :headlines
+  has_many :stories, through: :headlines
 
   def file_path
     # gsub is required due to Amazon S3 encoding glitch: https://bugs.launchpad.net/ubuntu/+source/apt/+bug/1003633
