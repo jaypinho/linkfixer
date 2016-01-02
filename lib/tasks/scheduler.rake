@@ -16,8 +16,8 @@ end
 desc "This task outputs all headlines currently on the NYT home page"
 task :get_nyt_headlines => :environment do
   # Automator.aggregate_headlines 'http://www.nytimes.com', '.story-heading'
-  Automator.aggregate_headlines 'http://www.wsj.com/', 'a.wsj-headline-link'
-  # Automator.aggregate_headlines 'http://www.theguardian.com/us', 'a[data-link-name="article"]'
+  # Automator.aggregate_headlines 'http://www.wsj.com/', 'a.wsj-headline-link'
+  Automator.aggregate_headlines 'http://www.theguardian.com/us', 'a[data-link-name="article"]'
 end
 
 desc "This task saves all headlines and takes a snapshot on all the site home pages"
