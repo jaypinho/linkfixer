@@ -16,7 +16,7 @@ module Automator
           :timeout => 60,
           :debug => true,
           :window_size => [1024,768],
-          phantomjs_options: ['--load-images=no', '--ignore-ssl-errors=yes']
+          :phantomjs_options => ['--load-images=no', '--ignore-ssl-errors=yes']
         }
         Capybara::Poltergeist::Driver.new(app, options)
       end
@@ -56,6 +56,7 @@ module Automator
       end
 
       session.driver.quit
+      after { Capybara.reset_sessions! }
 
     end
 
