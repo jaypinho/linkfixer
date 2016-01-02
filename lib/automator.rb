@@ -126,9 +126,9 @@ module Automator
 
     Capybara.register_driver :poltergeist do |app|
       options = {
-        :js_errors => false,
+        :js_errors => true,
         :timeout => 30,
-        :debug => false,
+        :debug => true,
         :window_size => [1024,768],
         :phantomjs_options => ['--load-images=no', '--ignore-ssl-errors=yes']
       }
