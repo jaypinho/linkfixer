@@ -157,7 +157,7 @@ module Automator
     Capybara.register_driver :poltergeist do |app|
       options = {
         :js_errors => false,
-        :timeout => 30,
+        :timeout => 60,
         :debug => false,
         :window_size => [1024,768]
       }

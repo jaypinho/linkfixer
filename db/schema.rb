@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160101025142) do
+ActiveRecord::Schema.define(version: 20160102043934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,10 +23,12 @@ ActiveRecord::Schema.define(version: 20160101025142) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "snapshot_id"
+    t.integer  "story_id"
   end
 
   add_index "headlines", ["site_id"], name: "index_headlines_on_site_id", using: :btree
   add_index "headlines", ["snapshot_id"], name: "index_headlines_on_snapshot_id", using: :btree
+  add_index "headlines", ["story_id"], name: "index_headlines_on_story_id", using: :btree
 
   create_table "sites", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -38,7 +40,7 @@ ActiveRecord::Schema.define(version: 20160101025142) do
   end
 
   create_table "snapshots", force: :cascade do |t|
-    t.string   "filename",   limit: 255
+    t.string   "filename",             limit: 255
     t.integer  "height"
     t.integer  "width"
     t.integer  "size"
@@ -46,8 +48,20 @@ ActiveRecord::Schema.define(version: 20160101025142) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "thumbnail"
+    t.boolean  "keyframe",                         default: true
+    t.text     "searchable_headlines"
   end
 
   add_index "snapshots", ["site_id"], name: "index_snapshots_on_site_id", using: :btree
 
+  create_table "stories", force: :cascade do |t|
+    t.string   "url"
+    t.integer  "site_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "stories", ["site_id"], name: "index_stories_on_site_id", using: :btree
+
+  add_foreign_key "stories", "sites"
 end
