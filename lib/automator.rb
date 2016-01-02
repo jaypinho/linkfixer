@@ -12,15 +12,15 @@ module Automator
 
       Capybara.register_driver :poltergeist do |app|
         options = {
-          :js_errors => false,
+          :js_errors => true,
           :timeout => 60,
-          :debug => false,
+          :debug => true,
           :window_size => [1024,768]
         }
         Capybara::Poltergeist::Driver.new(app, options)
       end
 
-      Capybara.reset_sessions!
+      # Capybara.reset_sessions!
 
       session = Capybara::Session.new(:poltergeist)
 
@@ -159,7 +159,7 @@ module Automator
     Capybara.register_driver :poltergeist do |app|
       options = {
         :js_errors => false,
-        :timeout => 90,
+        :timeout => 60,
         :debug => false,
         :window_size => [1024,768]
       }
