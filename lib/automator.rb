@@ -189,13 +189,13 @@ module Automator
           new_story = Story.new :url => headline[:href], :site => site
           new_story.save
 
-          new_headline = Headline.new :title => headline.text, :url => headline[:href], :snapshot => new_snapshot, :site => site, :story => new_story
+          new_headline = Headline.new :title => headline.text, :url => headline[:href], :snapshot => new_snapshot, :story => new_story
           new_headline.save
 
         # if Story does exist, link it to the new Headline when it's created
         else
 
-          new_headline = Headline.new :title => headline.text, :url => headline[:href], :snapshot => new_snapshot, :site => site, :story => Story.where(:url => headline[:href]).first
+          new_headline = Headline.new :title => headline.text, :url => headline[:href], :snapshot => new_snapshot, :story => Story.where(:url => headline[:href]).first
           new_headline.save
 
         end
