@@ -5,8 +5,8 @@ task :create_screenshots => :environment do
   #  'wapo' => 'https://www.washingtonpost.com/',
   #  'nyt' => 'http://www.nytimes.com/'
   #  'usatoday' => 'http://www.usatoday.com/',
-  #  'wsj' => 'http://www.wsj.com/',
-  'guardian' => 'http://www.theguardian.com/us'
+  'wsj' => 'http://www.wsj.com/'
+  # 'guardian' => 'http://www.theguardian.com/us'
   }
 
   Automator.create_screenshot sites_list, false
